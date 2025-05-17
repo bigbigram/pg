@@ -8,6 +8,7 @@ declare module "next-auth" {
       name: string;
       role: 'ADMIN' | 'USER';
       isActive: boolean;
+      domainId?: number | null;
     }
   }
 
@@ -17,6 +18,7 @@ declare module "next-auth" {
     name: string;
     role: 'ADMIN' | 'USER';
     isActive: boolean;
+    domainId?: number | null;
   }
 }
 
@@ -27,5 +29,6 @@ declare module "next-auth/jwt" {
     name: string;
     role: 'ADMIN' | 'USER';
     isActive: boolean;
+    domainId?: number | null;
   }
 }
