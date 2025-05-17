@@ -17,7 +17,17 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
+          where: { 
+            email: credentials.email 
+          },
+          select: {
+            id: true,
+            email: true,
+            password: true,
+            name: true,
+            role: true,
+            isActive: true
+          }
         });
 
         if (!user || !user.isActive) {
@@ -29,7 +39,6 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid credentials');
         }
 
-        // Ensure role is either 'ADMIN' or 'USER'
         const role = user.role.toUpperCase() as 'ADMIN' | 'USER';
 
         return {
@@ -38,7 +47,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           role: role,
           isActive: user.isActive
-        } as const;
+        };
       }
     })
   ],

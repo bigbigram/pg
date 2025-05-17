@@ -1,7 +1,8 @@
-import type { Prisma, Transaction as PrismaTransaction } from '@prisma/client';
+import { type Prisma } from '@prisma/client';
 
-export interface Transaction extends Omit<PrismaTransaction, 'amount'> {
-  amount: Prisma.Decimal;
+export interface Transaction {
+  id: string;
+  amount: number; // Changed from Prisma.Decimal
   orderNo: string;
   currency: string;
   status: 'INITIATED' | 'PROCESSING' | 'COMPLETED' | 'FAILED';

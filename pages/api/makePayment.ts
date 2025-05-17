@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Prisma } from '.prisma/client';
+import { PrismaClient } from '@prisma/client';
 import path from 'path';
 import fs from 'fs/promises';
 import { BFSPKIImplementation } from '../../utils/BFSPKIImplementation';
@@ -175,7 +175,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           data: {
             orderNo: formData.bfs_orderNo,
             domainId: domainInfo.id,
-            amount: new Prisma.Decimal(formData.bfs_txnAmount),
+            amount: parseFloat(formData.bfs_txnAmount), // Convert string to number
             currency: formData.bfs_txnCurrency,
             status: 'INITIATED',
             checksum: '',  // Will update after generating

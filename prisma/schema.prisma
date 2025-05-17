@@ -30,18 +30,15 @@ model AllowedDomain {
 }
 
 model Transaction {
-  id           Int           @id @default(autoincrement())
-  orderNo      String        @unique
-  domainId     Int
-  amount       Decimal
-  currency     String
-  status       String
-  checksum     String        @default("")
-  clientRefId  String?
-  metadata     Json?         @map("payment_details")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  domain       AllowedDomain @relation(fields: [domainId], references: [id])
+  id          String      @id @default(uuid())
+  amount      Decimal     @db.Decimal(10, 2)
+  orderNo     String      @unique
+  currency    String
+  status      String      @default("INITIATED")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  domainId    Int?
+  domain      AllowedDomain?     @relation(fields: [domainId], references: [id])
 
   @@map("transactions")
 }

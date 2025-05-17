@@ -75,7 +75,7 @@ export default function Dashboard({ initialStats }: DashboardProps) {
 
   return (
     <div className="py-6">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 mb-6"></h1>
       
       {loading ? (
         <div className="text-center py-4">Loading...</div>
@@ -140,7 +140,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
         DATE_FORMAT(createdAt, '%Y-%m') as month,
         COUNT(*) as count,
         CAST(SUM(amount) AS DECIMAL(10,2)) as amount
-      FROM Transaction
+      FROM transactions
       WHERE createdAt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
       GROUP BY DATE_FORMAT(createdAt, '%Y-%m')
       ORDER BY month DESC

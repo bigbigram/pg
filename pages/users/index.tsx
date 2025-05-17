@@ -35,7 +35,7 @@ export default function Users() {
     <div className="py-6">
       <div className="sm:flex sm:items-center mb-6">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900">Users</h1>
+          <h1 className="text-2xl font-semibold text-gray-900"></h1>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <Link
