@@ -1,0 +1,22 @@
+CREATE TABLE `AllowedDomain` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `clientName` varchar(100) NOT NULL,
+  `clientId` varchar(36) NOT NULL,
+  `clientSecret` varchar(64) NOT NULL,
+  `csrNumber` varchar(50) NOT NULL,
+  `serverIp` varchar(45) NOT NULL,
+  `clientDomain` varchar(100) NOT NULL,
+  `domain` varchar(100) NOT NULL,
+  `apiKey` varchar(100) NOT NULL,
+  `redirectUrl` varchar(255) NOT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `domain` (`domain`),
+  UNIQUE KEY `clientId` (`clientId`),
+  UNIQUE KEY `clientDomain` (`clientDomain`),
+  UNIQUE KEY `clientSecret` (`clientSecret`),
+  KEY `apiKey` (`apiKey`),
+  KEY `csrNumber` (`csrNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

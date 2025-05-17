@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AllowedDomain {
+  id           Int           @id @default(autoincrement())
+  clientName   String        @db.VarChar(100)
+  clientId     String        @unique @db.VarChar(36)
+  clientSecret String        @unique @db.VarChar(64)
+  csrNumber    String        @db.VarChar(50)
+  serverIp     String        @db.VarChar(45)
+  clientDomain String        @unique @db.VarChar(100)
+  domain       String        @unique @db.VarChar(100)
+  apiKey       String        @db.VarChar(100)
+  redirectUrl  String        @db.VarChar(255)
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  webhookUrl   String?       @map("webhook_url")
+
+  @@index([apiKey])
+  @@index([csrNumber])
+}
+
+model Transaction {
+  id           Int           @id @default(autoincrement())
+  orderNo      String        @unique
+  domainId     Int
+  amount       Decimal
+  currency     String
+  status       String
+  checksum     String        @default("")
+  clientRefId  String?
+  metadata     Json?         @map("payment_details")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  domain       AllowedDomain @relation(fields: [domainId], references: [id])
+
+  @@map("transactions")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(100)
+  password  String   @db.VarChar(255)
+  role      String   @default("USER") @db.VarChar(20)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
