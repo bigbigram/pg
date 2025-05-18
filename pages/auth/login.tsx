@@ -10,7 +10,7 @@ export default function Login() {
   const { callbackUrl } = router.query;
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    email: 'admin@example.com', // Pre-fill for development
+    email: 'bigbigram@gmail.com', // Pre-fill for development
     password: 'admin123' // Pre-fill for development
   });
 
