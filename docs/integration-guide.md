@@ -7,7 +7,7 @@ Send a POST request to `/api/makePayment` with the following parameters:
 ```javascript
 {
   "bfs_msgType": "AR",
-  "bfs_benfId": "your_beneficiary_id",
+  "bfs_benfId": "BE10000237",
   "bfs_orderNo": "unique_order_number",
   "bfs_benfTxnTime": "YYYY-MM-DD HH:mm:ss",
   "bfs_benfBankCode": "your_bank_code",
@@ -17,7 +17,8 @@ Send a POST request to `/api/makePayment` with the following parameters:
   "bfs_paymentDesc": "Payment description",
   "bfs_version": "1.0",
   "successUrl": "https://your-domain.com/payment/success",
-  "failureUrl": "https://your-domain.com/payment/failure"
+  "failureUrl": "https://your-domain.com/payment/failure",
+  "cancelUrl": "https://your-domain.com/payment/cancel"
 }
 ```
 
@@ -52,7 +53,8 @@ async function initiatePayment(orderDetails) {
       bfs_orderNo: orderDetails.orderId,
       // ... other required fields
       successUrl: 'https://your-domain.com/payment/success',
-      failureUrl: 'https://your-domain.com/payment/failure'
+      failureUrl: 'https://your-domain.com/payment/failure',
+      cancelUrl: "https://your-domain.com/payment/cancel"
     })
   });
 

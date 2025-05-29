@@ -140,12 +140,18 @@ export default function Header() {
   }
 
   return (
-    <nav className="bg-gradient-to-r from-blue-600 to-blue-800 fixed w-full top-0 z-50 shadow-lg">
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-200 ${
+      isScrolled 
+        ? 'bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg' 
+        : 'bg-gradient-to-r from-blue-600 to-blue-800'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <span className="text-2xl font-bold text-white">RMA Pay</span>
+              <span className="text-2xl font-bold text-white tracking-tight hover:text-blue-200 transition-colors">
+                RMA Pay
+              </span>
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-center space-x-4">
@@ -155,11 +161,12 @@ export default function Header() {
                     href={item.href}
                     className={`${
                       isActive(item.href)
-                        ? 'bg-blue-700 text-white'
-                        : 'text-blue-100 hover:bg-blue-700 hover:text-white'
-                    } px-4 py-2 rounded-md text-base font-medium transition-colors duration-150 whitespace-nowrap`}
+                        ? 'bg-blue-700/50 text-white ring-2 ring-blue-400/50'
+                        : 'text-blue-100 hover:bg-blue-700/30 hover:text-white'
+                    } px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 flex items-center space-x-2`}
                   >
-                    {item.name}
+                    {item.icon}
+                    <span>{item.name}</span>
                   </Link>
                 ))}
               </div>
@@ -168,23 +175,21 @@ export default function Header() {
 
           <div className="hidden md:block">
             <div className="ml-4 flex items-center space-x-4">
-              {/* Notifications button */}
-              <button className="relative p-2 text-blue-100 hover:bg-blue-700 hover:text-white rounded-full">
-                <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red-500"></span>
+              <button className="relative p-2 text-blue-100 hover:bg-blue-700/30 hover:text-white rounded-full transition-colors duration-200">
+                <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse"></span>
                 <BellIcon className="h-5 w-5" />
               </button>
 
-              {/* User menu */}
               {status === 'authenticated' ? (
                 <div className="relative group">
                   <button 
-                    className="flex items-center text-sm text-white hover:bg-blue-700 px-3 py-2 rounded-md transition-colors duration-150"
+                    className="flex items-center text-sm text-white hover:bg-blue-700/30 px-3 py-2 rounded-lg transition-all duration-200"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsUserMenuOpen(!isUserMenuOpen);
                     }}
                   >
-                    <div className="h-8 w-8 rounded-full bg-blue-700 flex items-center justify-center mr-2">
+                    <div className="h-8 w-8 rounded-full bg-blue-500/50 backdrop-blur-sm flex items-center justify-center mr-2 ring-2 ring-blue-400/50">
                       <span className="text-sm font-medium text-white">
                         {session?.user?.email?.charAt(0).toUpperCase() || 'U'}
                       </span>
@@ -192,13 +197,15 @@ export default function Header() {
                     <span className="hidden md:inline-block mr-1">
                       {session?.user?.email?.split('@')[0]}
                     </span>
-                    <ChevronDownIcon className="w-4 h-4 ml-1" />
+                    <ChevronDownIcon className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" />
                   </button>
                   
-                  {/* Dropdown menu */}
+                  {/* Update dropdown styles */}
                   <div 
                     ref={userMenuRef}
-                    className={`${isUserMenuOpen ? 'block' : 'hidden'} absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-50`}
+                    className={`${
+                      isUserMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+                    } absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 z-50 transition-all duration-200`}
                   >
                     <div className="px-4 py-3 border-b border-gray-100">
                       <p className="text-sm text-gray-900 font-medium">{session?.user?.email}</p>
@@ -220,7 +227,7 @@ export default function Header() {
               ) : (
                 <Link 
                   href="/auth/login" 
-                  className="text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150"
+                  className="text-white bg-blue-500/20 hover:bg-blue-700/30 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 backdrop-blur-sm"
                 >
                   Sign In
                 </Link>
@@ -228,72 +235,94 @@ export default function Header() {
             </div>
           </div>
 
+          {/* Mobile menu button with improved styling */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-blue-100 hover:text-white hover:bg-blue-700 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-lg text-blue-100 hover:text-white focus:outline-none"
+              aria-label="Main menu"
             >
-              <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                />
-              </svg>
+              <div className="relative w-6 h-6">
+                <span className={`absolute block h-0.5 w-6 bg-current transform transition duration-200 ease-in-out ${
+                  isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : '-translate-y-2'
+                }`} />
+                <span className={`absolute block h-0.5 w-6 bg-current transform transition duration-200 ease-in-out ${
+                  isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                }`} />
+                <span className={`absolute block h-0.5 w-6 bg-current transform transition duration-200 ease-in-out ${
+                  isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : 'translate-y-2'
+                }`} />
+              </div>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      <div className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-        <div className="px-2 pt-2 pb-3 space-y-1">
-          {filteredNavItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`${
-                isActive(item.href)
-                  ? 'bg-blue-700 text-white'
-                  : 'text-blue-100 hover:bg-blue-700 hover:text-white'
-              } group flex items-center px-3 py-2 text-base font-medium rounded-md`}
-            >
-              {item.icon}
-              {item.name}
-            </Link>
-          ))}
-          
+      {/* Mobile menu overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile menu with improved styling */}
+      <div className={`fixed top-16 right-0 w-64 h-[calc(100vh-4rem)] md:hidden bg-blue-900/95 backdrop-blur-sm transform transition-all duration-300 ease-in-out shadow-xl ${
+        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        <div className="flex flex-col h-full">
+          <div className="flex-1 px-3 py-4 space-y-2 overflow-y-auto">
+            {filteredNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`${
+                  isActive(item.href)
+                    ? 'bg-blue-700/80 text-white'
+                    : 'text-blue-100 hover:bg-blue-800/80'
+                } flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-colors`}
+              >
+                <span className="w-5 h-5 mr-3">{item.icon}</span>
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
           {status === 'authenticated' ? (
-            <div className="pt-4 border-t border-blue-700">
-              <div className="flex items-center px-3 py-2">
-                <div className="h-10 w-10 rounded-full bg-blue-700 flex items-center justify-center mr-3">
+            <div className="p-3 border-t border-blue-800">
+              <div className="flex items-center px-4 py-3 mb-2 bg-blue-800/50 rounded-xl">
+                <div className="h-9 w-9 rounded-full bg-blue-700 flex items-center justify-center mr-3 ring-2 ring-blue-400/30">
                   <span className="text-sm font-medium text-white">
                     {session?.user?.email?.charAt(0).toUpperCase() || 'U'}
                   </span>
                 </div>
-                <div className="text-sm text-white">
-                  <div className="font-medium">{session?.user?.email}</div>
-                  <div className="text-blue-200 text-xs">
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-white truncate">
+                    {session?.user?.email}
+                  </div>
+                  <div className="text-xs text-blue-300">
                     {session?.user?.role === 'ADMIN' ? 'Administrator' : 'User'}
                   </div>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="w-full mt-2 flex items-center px-3 py-2 text-base font-medium text-blue-100 hover:bg-blue-700 hover:text-white rounded-md"
+                className="w-full flex items-center px-4 py-3 text-sm font-medium text-red-300 hover:bg-red-500/10 rounded-xl"
               >
-                <LogOutIcon className="mr-2 h-5 w-5" />
+                <LogOutIcon className="mr-3 h-5 w-5" />
                 Sign Out
               </button>
             </div>
           ) : (
-            <Link
-              href="/auth/login"
-              className="block px-3 py-2 rounded-md text-base font-medium text-blue-100 hover:bg-blue-700 hover:text-white"
-            >
-              Sign In
-            </Link>
+            <div className="p-3 border-t border-blue-800">
+              <Link
+                href="/auth/login"
+                className="flex items-center px-4 py-3 text-sm font-medium text-blue-100 hover:bg-blue-800/80 rounded-xl"
+              >
+                <UserIcon className="mr-3 h-5 w-5" />
+                Sign In
+              </Link>
+            </div>
           )}
         </div>
       </div>

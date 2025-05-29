@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     // Get existing transaction first
     const existingTransaction = await prisma.transaction.findUnique({
-      where: { id: Number(id) }
+      where: { id: String(id) }
     });
 
     if (!existingTransaction) {
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const transaction = await prisma.transaction.update({
-      where: { id: Number(id) },
+      where: { id: String(id) },
       data: {
         status: status === 'SUCCESS' ? 'COMPLETED' : 'FAILED',
         metadata: {

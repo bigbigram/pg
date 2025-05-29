@@ -6,11 +6,13 @@ import { BFSPKIImplementation } from '../../utils/BFSPKIImplementation';
 import { validateClientDomain } from '../../middleware/validateClientDomain';
 import prisma from '../../lib/prisma';
 import { RMA_CONFIG } from '../../config/constants';
-import { generateRMAChecksum } from '../../utils/rmaHelpers';
+import { generateBFSChecksum } from '../../utils/rmaHelpers';
 import { sanitize } from 'isomorphic-dompurify';
 import validator from 'validator';
 import type { PaymentRequest, SafePaymentRequest } from '../../types/payment';
 import { getAllowedOrigins } from '../../utils/getAllowedOrigins';
+import type { RMAParams } from '../../types/rma';
+import type { TransactionMetadata } from '../../types/transaction';
 
 const PKI_KEY_PATH = path.resolve(process.cwd(), 'WebContent', 'pki', 'BE10000001.key');
 
@@ -72,7 +74,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'bfs_paymentDesc',
       'bfs_version',
       'successUrl',
-      'failureUrl'
+      'failureUrl',
+      'cancelUrl'
     ];
 
     return requiredFields.every(field => typeof data[field] === 'string');
@@ -153,7 +156,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         'bfs_paymentDesc',
         'bfs_version',
         'successUrl',  // New required field
-        'failureUrl'   // New required field
+        'failureUrl',   // New required field
+        'cancelUrl'     // New required field
       ];
 
       const missingFields = requiredFields.filter(field => {
@@ -167,68 +171,74 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       try {
-        if (!prisma || !prisma.transaction) {
-          throw new Error('Prisma client not initialized properly');
-        }
+        // Prepare BFS parameters before transaction creation
+        const bfsParams = {
+          bfs_msgType: formData.bfs_msgType,
+          bfs_benfId: formData.bfs_benfId,
+          bfs_orderNo: formData.bfs_orderNo,
+          bfs_benfTxnTime: formData.bfs_benfTxnTime,
+          bfs_benfBankCode: formData.bfs_benfBankCode,
+          bfs_txnCurrency: formData.bfs_txnCurrency,
+          bfs_txnAmount: Number(formData.bfs_txnAmount).toFixed(2),
+          bfs_remitterEmail: formData.bfs_remitterEmail,
+          bfs_paymentDesc: formData.bfs_paymentDesc,
+          bfs_version: formData.bfs_version
+        };
+
+        const checksum = generateBFSChecksum(bfsParams);
 
         const transaction = await prisma.transaction.create({
           data: {
             orderNo: formData.bfs_orderNo,
-            domainId: domainInfo.id,
-            amount: parseFloat(formData.bfs_txnAmount), // Convert string to number
+            domain: {
+              connect: {
+                id: domainInfo.id
+              }
+            },
+            amount: parseFloat(formData.bfs_txnAmount),
             currency: formData.bfs_txnCurrency,
             status: 'INITIATED',
-            checksum: '',  // Will update after generating
-            clientRefId: formData.clientRefId || null,
+            checksum: checksum, // Now checksum exists when we create the transaction
             metadata: {
               customerEmail: formData.bfs_remitterEmail,
               description: formData.bfs_paymentDesc,
               successUrl: formData.successUrl,
-              failureUrl: formData.failureUrl
+              failureUrl: formData.failureUrl,
+              cancelUrl: formData.cancelUrl,
+              clientRefId: formData.clientRefId || null,
+              bfsParams
             }
           }
         });
+        console.log('Transaction created:', transaction);
 
-        // Generate RMA payment parameters after transaction creation
-        const rmaParams = {
-          merchantId: RMA_CONFIG.MERCHANT_ID,
-          merchantTxnNo: transaction.orderNo,
-          amount: Number(formData.bfs_txnAmount).toFixed(2), // Fix decimal places
-          currency: 'BTN',
-          description: formData.bfs_paymentDesc,
+        // Convert metadata to plain object for JSON compatibility
+        const metadataObj = {
           customerEmail: formData.bfs_remitterEmail,
-          merchantKey: RMA_CONFIG.MERCHANT_KEY,
-          callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/callback/rma/${transaction.id}`,
-          returnUrl: formData.successUrl,
-          cancelUrl: formData.failureUrl
-        };
+          description: formData.bfs_paymentDesc,
+          successUrl: formData.successUrl,
+          failureUrl: formData.failureUrl,
+          cancelUrl: formData.cancelUrl,
+          clientRefId: formData.clientRefId || null,
+          checksum,
+          bfsParams
+        } as const;
 
-        const checksum = generateRMAChecksum(rmaParams);
-        
-        // Update transaction with generated checksum
         await prisma.transaction.update({
           where: { id: transaction.id },
-          data: { checksum }
+          data: {
+            metadata: metadataObj
+          }
         });
 
-        console.log('Checksum generated:', checksum);
-        console.log('Transaction updated with checksum:', transaction.id);
-
+        // Return BFS payment parameters
         return res.status(200).json({
           success: true,
           paymentParams: {
-            merchantId: RMA_CONFIG.MERCHANT_ID,
-            merchantTxnNo: transaction.orderNo,
-            amount: formData.bfs_txnAmount,
-            currency: formData.bfs_txnCurrency,
-            description: formData.bfs_paymentDesc,
-            customerEmail: formData.bfs_remitterEmail,
-            callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/callback/rma/${transaction.id}`,
-            returnUrl: formData.successUrl,
-            cancelUrl: formData.failureUrl,
-            checksum
+            ...bfsParams,
+            bfs_checkSum: checksum
           },
-          debug: { checksum } // Add for debugging
+          transactionId: transaction.id
         });
       } catch (error) {
         console.error('Transaction error details:', error);

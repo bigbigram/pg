@@ -11,6 +11,7 @@ export interface PaymentRequest {
   bfs_version: string;
   successUrl: string;
   failureUrl: string;
+  cancelUrl: string;
   clientRefId?: string;
 }
 

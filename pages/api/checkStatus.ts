@@ -10,14 +10,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const formData = {
       bfs_msgType: 'AR',
-      bfs_benfId: 'BE10000001',
+      bfs_benfId: 'BE10000237',
       bfs_benfTxnTime: formatDate(new Date()),
       bfs_orderNo: '20160623145221',
-      bfs_benfBankCode: '01',
+      bfs_benfBankCode: '02',
       bfs_txnCurrency: 'BTN',
       bfs_txnAmount: '100.00',
       bfs_remitterEmail: 'customer@gmail.com',
-      bfs_paymentDesc: 'Water Bill',
+      bfs_paymentDesc: 'WaterBill',
       bfs_version: '1.0'
     };
 

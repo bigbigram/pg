@@ -43,15 +43,15 @@ export default function AddDomain() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-      <div className="mb-8">
+    <div className="mt-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-8 border-b border-gray-200 pb-6">
         <h1 className="text-3xl font-bold text-gray-900">Add New Domain</h1>
         <p className="mt-2 text-sm text-gray-600">Register a new domain for integration</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8 divide-y divide-gray-200">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="rounded-md bg-red-50 p-4 mb-6">
+          <div className="rounded-lg bg-red-50 p-4 mb-6 border border-red-200">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -65,9 +65,10 @@ export default function AddDomain() {
           </div>
         )}
 
-        <div className="space-y-8 divide-y divide-gray-200">
-          <div className="pt-8">
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+        <div className="bg-white shadow-sm rounded-lg p-6 space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
                   Client Name
@@ -138,13 +139,10 @@ export default function AddDomain() {
             </div>
           </div>
 
-          <div className="pt-8">
-            <div>
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Technical Details</h3>
-              <p className="mt-1 text-sm text-gray-500">Server and domain configuration</p>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+          <div className="border-t border-gray-200 pt-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Technical Details</h2>
+            <p className="text-sm text-gray-500 mb-4">Server and domain configuration</p>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
                 <label htmlFor="serverIp" className="block text-sm font-medium text-gray-700">
                   Server IP
@@ -189,13 +187,10 @@ export default function AddDomain() {
             </div>
           </div>
 
-          <div className="pt-8">
-            <div>
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Authentication Details</h3>
-              <p className="mt-1 text-sm text-gray-500">Auto-generated secure credentials</p>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+          <div className="border-t border-gray-200 pt-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Authentication Details</h2>
+            <p className="text-sm text-gray-500 mb-4">Auto-generated secure credentials</p>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Client ID</label>
                 <input
@@ -219,29 +214,27 @@ export default function AddDomain() {
           </div>
         </div>
 
-        <div className="pt-5">
-          <div className="flex justify-end space-x-3">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-            >
-              {loading ? (
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              ) : null}
-              {loading ? 'Saving...' : 'Save Domain'}
-            </button>
-          </div>
+        <div className="flex justify-end gap-4 mt-6">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+          >
+            {loading && (
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
+            {loading ? 'Saving...' : 'Save Domain'}
+          </button>
         </div>
       </form>
     </div>

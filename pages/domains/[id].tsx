@@ -47,12 +47,15 @@ export default function DomainDetails() {
   if (!domain) return <div className="p-4">Domain not found</div>;
 
   return (
-    <div className="py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6">
+    <div className="mt-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
           <h1 className="text-2xl font-semibold text-gray-900">{domain.clientName}</h1>
-          <Link href="/domains" className="text-blue-600 hover:text-blue-900">
-            Back to Domains
+          <Link 
+            href="/domains" 
+            className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+          >
+            ← Back to Domains
           </Link>
         </div>
 

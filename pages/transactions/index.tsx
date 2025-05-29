@@ -43,18 +43,18 @@ export default function Transactions() {
   }, [session]); // Depend on session
 
   return (
-    <div>
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
+    <div className="mt-20 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
           <h1 className="text-2xl font-semibold text-gray-900">Transactions</h1>
         </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+        <div className="w-full sm:w-72">
           <input
             type="search"
             placeholder="Search by Order No..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
           />
         </div>
       </div>
@@ -78,6 +78,7 @@ export default function Transactions() {
                 <table className="min-w-full divide-y divide-gray-300">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">SL No</th>
                       <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Order No</th>
                       <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Domain</th>
                       <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Amount</th>
@@ -88,8 +89,9 @@ export default function Transactions() {
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {transactions
                       .filter(tx => tx.orderNo.includes(searchTerm))
-                      .map((transaction) => (
+                      .map((transaction, index) => (
                         <tr key={transaction.id} className="hover:bg-gray-50">
+                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{index + 1}</td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{transaction.orderNo}</td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {transaction.domain?.domain || 'N/A'}

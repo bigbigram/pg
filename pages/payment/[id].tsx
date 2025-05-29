@@ -81,7 +81,7 @@ export default function PaymentPage({ transaction }: PaymentPageProps) {
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const transaction = await prisma.transaction.findUnique({
-    where: { id: Number(params?.id) },
+    where: { id: String(params?.id) },
     include: { domain: true }
   });
 
@@ -101,7 +101,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     merchantKey: process.env.RMA_MERCHANT_KEY,
     callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/callback/rma/${transaction.id}`,
     returnUrl: metadata.successUrl,
-    cancelUrl: metadata.failureUrl,
+    failureUrl: metadata.failureUrl,
+    cancelUrl: metadata.cancelUrl,
     checksum: transaction.checksum
   };
 

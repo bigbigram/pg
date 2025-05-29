@@ -40,6 +40,9 @@ model Transaction {
   updatedAt   DateTime    @updatedAt
   domainId    Int?
   domain      AllowedDomain?     @relation(fields: [domainId], references: [id])
+  metadata    Json?
+  checksum    String?
+  clientRefId String?
 
   @@map("transactions")
 }

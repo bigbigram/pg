@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Login() {
   const { data: session, status } = useSession();
@@ -13,6 +14,7 @@ export default function Login() {
     email: 'bigbigram@gmail.com', // Pre-fill for development
     password: 'admin123' // Pre-fill for development
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   // Debug session status
   useEffect(() => {
@@ -66,9 +68,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="absolute top-4 right-4">
-        <Link href="/" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-          Go to Home
-        </Link>
+     
       </div>
       <div className="max-w-md w-full space-y-8">
         <div>
@@ -106,7 +106,7 @@ export default function Login() {
                 id="email"
                 name="email"
                 type="email"
-                autoComplete="email"
+                autoComplete="off"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
@@ -114,19 +114,30 @@ export default function Login() {
                 placeholder="Email address"
               />
             </div>
-            <div>
+            <div className="relative">
               <label htmlFor="password" className="sr-only">Password</label>
               <input
                 id="password"
                 name="password"
-                type="password"
-                autoComplete="current-password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="off"
                 required
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm pr-10"
                 placeholder="Password"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(s => !s)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <Eye className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
             </div>
           </div>
 
